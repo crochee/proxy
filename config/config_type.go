@@ -5,4 +5,10 @@
 package config
 
 type Config struct {
+	List []*ProxyHost `json:"list" yaml:"list"`
+}
+
+type ProxyHost struct {
+	Origin []string `json:"origin" yaml:"origin"`
+	Target []string `json:"target" yaml:"target"`
 }

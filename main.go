@@ -14,18 +14,32 @@ import (
 
 	"github.com/crochee/proxy/config"
 	"github.com/crochee/proxy/logger"
+	"github.com/crochee/proxy/router"
 )
 
 func main() {
 	logger.InitLogger()
 	config.InitConfig()
-	srv := &http.Server{
+
+	httpSrv := &http.Server{
 		Addr:    ":80",
-		Handler: nil,
+		Handler: router.Redirect{},
+	}
+
+	httpsSrv := &http.Server{
+		Addr:      ":443",
+		Handler:   router.Redirect{},
+		TLSConfig: nil,
 	}
 	go func() {
-		logger.Info("proxy running...")
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logger.Info("proxy http running...")
+		if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatal(err.Error())
+		}
+	}()
+	go func() {
+		logger.Info("proxy https running...")
+		if err := httpsSrv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
 			logger.Fatal(err.Error())
 		}
 	}()
@@ -39,8 +53,11 @@ func main() {
 	defer cancel()
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
-	if err := srv.Shutdown(ctx); err != nil {
-		logger.Fatalf("Server forced to shutdown:%v", err)
+	if err := httpSrv.Shutdown(ctx); err != nil {
+		logger.Fatalf("http Server forced to shutdown:%v", err)
+	}
+	if err := httpsSrv.Shutdown(ctx); err != nil {
+		logger.Fatalf("https Server forced to shutdown:%v", err)
 	}
 	logger.Info("proxy server exit!")
 }
