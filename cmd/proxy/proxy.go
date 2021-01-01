@@ -15,7 +15,7 @@ import (
 	"github.com/crochee/proxy/cmd"
 	"github.com/crochee/proxy/config"
 	"github.com/crochee/proxy/logger"
-	"github.com/crochee/proxy/service"
+	"github.com/crochee/proxy/server"
 )
 
 func main() {
@@ -29,7 +29,6 @@ func main() {
 			Name:        "proxy",
 			Aliases:     []string{"p"},
 			Usage:       "proxy server",
-			After:       nil,
 			Action:      Run,
 			Subcommands: nil,
 			Flags:       BeforeFlags,
@@ -73,17 +72,22 @@ func Run(c *cli.Context) error {
 		logger.Level(strings.ToUpper(c.String("log-level"))),
 		logger.LogPath(c.String("log-path")),
 	)
-	Test(ctx)
-	return nil
+	return setup(ctx, nil)
 }
 
 func setup(ctx context.Context, cfg *config.Config) error {
-	roundTripperManager := service.NewRoundTripperManager()
+	ctx = server.ContextWithSignal(ctx)
 
-	roundTripperManager.Update(map[string]*config.ServersTransport{})
+	// 开启server
+	srv := server.NewServer(ctx)
+	srv.Start()
+	defer srv.Close()
+
+	srv.Wait()
+	logger.FromContext(ctx).Info("Shutting down")
+
+	//roundTripperManager := service.NewRoundTripperManager()
+
+	//roundTripperManager.Update(map[string]*config.ServersTransport{})
 	return nil
-}
-
-func Test(ctx context.Context) {
-	logger.FromContext(ctx).Info("test")
 }

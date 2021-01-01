@@ -53,7 +53,9 @@ func InitLogger(opts ...Option) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Infof(format string, v ...interface{}) {
-	logger.Infof(format, v...)
+	if logger != nil {
+		logger.loggerSugar.Infof(format, v...)
+	}
 }
 
 func (l *Logger) Infof(format string, v ...interface{}) {
@@ -63,7 +65,9 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 }
 
 func Info(message string) {
-	logger.Info(message)
+	if logger != nil {
+		logger.logger.Info(message)
+	}
 }
 
 func (l *Logger) Info(message string) {
@@ -77,7 +81,9 @@ func (l *Logger) Info(message string) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Debugf(format string, v ...interface{}) {
-	logger.Debugf(format, v...)
+	if logger != nil {
+		logger.loggerSugar.Debugf(format, v...)
+	}
 }
 
 func (l *Logger) Debugf(format string, v ...interface{}) {
@@ -87,7 +93,9 @@ func (l *Logger) Debugf(format string, v ...interface{}) {
 }
 
 func Debug(message string) {
-	logger.Debug(message)
+	if logger != nil {
+		logger.logger.Debug(message)
+	}
 }
 
 func (l *Logger) Debug(message string) {
@@ -97,7 +105,9 @@ func (l *Logger) Debug(message string) {
 }
 
 func Warnf(format string, v ...interface{}) {
-	logger.Warnf(format, v...)
+	if logger != nil {
+		logger.loggerSugar.Warnf(format, v...)
+	}
 }
 
 func (l *Logger) Warnf(format string, v ...interface{}) {
@@ -107,7 +117,9 @@ func (l *Logger) Warnf(format string, v ...interface{}) {
 }
 
 func Warn(message string) {
-	logger.Warn(message)
+	if logger != nil {
+		logger.logger.Warn(message)
+	}
 }
 
 func (l *Logger) Warn(message string) {
@@ -121,7 +133,9 @@ func (l *Logger) Warn(message string) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Errorf(format string, v ...interface{}) {
-	logger.Errorf(format, v...)
+	if logger != nil {
+		logger.loggerSugar.Errorf(format, v...)
+	}
 }
 
 func (l *Logger) Errorf(format string, v ...interface{}) {
@@ -131,7 +145,9 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 }
 
 func Error(message string) {
-	logger.Error(message)
+	if logger != nil {
+		logger.logger.Error(message)
+	}
 }
 
 func (l *Logger) Error(message string) {
@@ -141,7 +157,9 @@ func (l *Logger) Error(message string) {
 }
 
 func Fatalf(format string, v ...interface{}) {
-	logger.Fatalf(format, v...)
+	if logger != nil {
+		logger.loggerSugar.Fatalf(format, v...)
+	}
 }
 
 func (l *Logger) Fatalf(format string, v ...interface{}) {
@@ -151,7 +169,9 @@ func (l *Logger) Fatalf(format string, v ...interface{}) {
 }
 
 func Fatal(message string) {
-	logger.Fatal(message)
+	if logger != nil {
+		logger.logger.Fatal(message)
+	}
 }
 
 func (l *Logger) Fatal(message string) {
