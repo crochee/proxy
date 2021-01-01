@@ -5,13 +5,17 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 
 	"github.com/crochee/proxy/cmd"
+	"github.com/crochee/proxy/config"
 	"github.com/crochee/proxy/logger"
+	"github.com/crochee/proxy/service"
 )
 
 func main() {
@@ -25,7 +29,6 @@ func main() {
 			Name:        "proxy",
 			Aliases:     []string{"p"},
 			Usage:       "proxy server",
-			Before:      Before,
 			After:       nil,
 			Action:      Run,
 			Subcommands: nil,
@@ -35,7 +38,6 @@ func main() {
 			Name:    "tls",
 			Aliases: []string{"t"},
 			Usage:   "generates random TLS certificates",
-			Before:  Before,
 			Action:  Certificate,
 			Flags:   append(BeforeFlags, TlsFlags...),
 		},
@@ -65,15 +67,23 @@ var BeforeFlags = []cli.Flag{
 	},
 }
 
-func Before(ctx *cli.Context) error {
-	if !ctx.Bool("enable-log") {
-		return nil
-	}
-	logger.InitLogger(ctx.String("log-path"), ctx.String("log-level"))
+func Run(c *cli.Context) error {
+	ctx := logger.With(context.Background(),
+		logger.Enable(c.Bool("enable-log")),
+		logger.Level(strings.ToUpper(c.String("log-level"))),
+		logger.LogPath(c.String("log-path")),
+	)
+	Test(ctx)
 	return nil
 }
 
-func Run(ctx *cli.Context) error {
-	logger.Info("test")
+func setup(ctx context.Context, cfg *config.Config) error {
+	roundTripperManager := service.NewRoundTripperManager()
+
+	roundTripperManager.Update(map[string]*config.ServersTransport{})
 	return nil
+}
+
+func Test(ctx context.Context) {
+	logger.FromContext(ctx).Info("test")
 }

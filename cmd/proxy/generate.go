@@ -5,6 +5,9 @@
 package main
 
 import (
+	"context"
+	"strings"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/crochee/proxy/logger"
@@ -26,11 +29,16 @@ var TlsFlags = []cli.Flag{
 	},
 }
 
-func Certificate(ctx *cli.Context) error {
-	logger.Info("generates random TLS certificates start!")
-	_, err := generate.DefaultCertificate(ctx.String("cert"), ctx.String("key"))
+func Certificate(c *cli.Context) error {
+	ctx := logger.With(context.Background(),
+		logger.Enable(c.Bool("enable-log")),
+		logger.Level(strings.ToUpper(c.String("log-level"))),
+		logger.LogPath(c.String("log-path")),
+	)
+	logger.FromContext(ctx).Info("generates random TLS certificates start!")
+	_, err := generate.DefaultCertificate(c.String("cert"), c.String("key"))
 	if err != nil {
-		logger.Error(err.Error())
+		logger.FromContext(ctx).Error(err.Error())
 	}
 	return nil
 }

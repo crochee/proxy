@@ -13,10 +13,14 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var (
+var logger *Logger
+
+type Logger struct {
+	level       zapcore.Level
+	path        string
 	logger      *zap.Logger
 	loggerSugar *zap.SugaredLogger
-)
+}
 
 // SetLoggerWriter
 func SetLoggerWriter(path string) io.Writer {
@@ -31,13 +35,17 @@ func SetLoggerWriter(path string) io.Writer {
 }
 
 // InitLogger 初始化日志组件
-func InitLogger(path, level string) {
-	if path == "" || level == "" {
-		logger = NewZap("DEBUG", zapcore.NewConsoleEncoder, os.Stdout)
-	} else {
-		logger = NewZap(level, zapcore.NewJSONEncoder, SetLoggerWriter(path))
+func InitLogger(opts ...Option) {
+	logger = &Logger{}
+	for _, opt := range opts {
+		opt.Apply(logger)
 	}
-	loggerSugar = logger.Sugar()
+	if logger.path == "" {
+		logger.logger = NewZap(logger.level, zapcore.NewConsoleEncoder, os.Stdout)
+	} else {
+		logger.logger = NewZap(logger.level, zapcore.NewConsoleEncoder, SetLoggerWriter(logger.path))
+	}
+	logger.loggerSugar = logger.logger.Sugar()
 }
 
 // Infof 打印Info信息
@@ -45,14 +53,22 @@ func InitLogger(path, level string) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Infof(format string, v ...interface{}) {
-	if loggerSugar != nil {
-		loggerSugar.Infof(format, v...)
+	logger.Infof(format, v...)
+}
+
+func (l *Logger) Infof(format string, v ...interface{}) {
+	if l != nil {
+		l.loggerSugar.Infof(format, v...)
 	}
 }
 
 func Info(message string) {
-	if logger != nil {
-		logger.Info(message)
+	logger.Info(message)
+}
+
+func (l *Logger) Info(message string) {
+	if l != nil {
+		l.logger.Info(message)
 	}
 }
 
@@ -61,26 +77,42 @@ func Info(message string) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Debugf(format string, v ...interface{}) {
-	if loggerSugar != nil {
-		loggerSugar.Debugf(format, v...)
+	logger.Debugf(format, v...)
+}
+
+func (l *Logger) Debugf(format string, v ...interface{}) {
+	if l != nil {
+		l.loggerSugar.Debugf(format, v...)
 	}
 }
 
 func Debug(message string) {
-	if logger != nil {
-		logger.Debug(message)
+	logger.Debug(message)
+}
+
+func (l *Logger) Debug(message string) {
+	if l != nil {
+		l.logger.Debug(message)
 	}
 }
 
 func Warnf(format string, v ...interface{}) {
-	if loggerSugar != nil {
-		loggerSugar.Warnf(format, v...)
+	logger.Warnf(format, v...)
+}
+
+func (l *Logger) Warnf(format string, v ...interface{}) {
+	if l != nil {
+		l.loggerSugar.Warnf(format, v...)
 	}
 }
 
 func Warn(message string) {
-	if logger != nil {
-		logger.Warn(message)
+	logger.Warn(message)
+}
+
+func (l *Logger) Warn(message string) {
+	if l != nil {
+		l.logger.Warn(message)
 	}
 }
 
@@ -89,25 +121,41 @@ func Warn(message string) {
 // @param: format 格式信息
 // @param: v 参数信息
 func Errorf(format string, v ...interface{}) {
-	if loggerSugar != nil {
-		loggerSugar.Errorf(format, v...)
+	logger.Errorf(format, v...)
+}
+
+func (l *Logger) Errorf(format string, v ...interface{}) {
+	if l != nil {
+		l.loggerSugar.Errorf(format, v...)
 	}
 }
 
 func Error(message string) {
-	if logger != nil {
-		logger.Error(message)
+	logger.Error(message)
+}
+
+func (l *Logger) Error(message string) {
+	if l != nil {
+		l.logger.Error(message)
 	}
 }
 
 func Fatalf(format string, v ...interface{}) {
-	if loggerSugar != nil {
-		loggerSugar.Fatalf(format, v...)
+	logger.Fatalf(format, v...)
+}
+
+func (l *Logger) Fatalf(format string, v ...interface{}) {
+	if l != nil {
+		l.loggerSugar.Fatalf(format, v...)
 	}
 }
 
 func Fatal(message string) {
-	if logger != nil {
-		logger.Fatal(message)
+	logger.Fatal(message)
+}
+
+func (l *Logger) Fatal(message string) {
+	if l != nil {
+		l.logger.Fatal(message)
 	}
 }
