@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
+	"log"
 	"os"
 )
 
@@ -31,6 +32,7 @@ func SetLoggerWriter(path string) io.Writer {
 
 // InitLogger 初始化日志组件
 func InitLogger(path, level string) {
+	log.Println(path, level)
 	if path == "" || level == "" {
 		logger = NewZap("DEBUG", zapcore.NewConsoleEncoder, os.Stdout)
 	} else {

@@ -53,7 +53,6 @@ var BeforeFlags = []cli.Flag{
 		Aliases: []string{"el"},
 		Usage:   "enable log switch",
 		EnvVars: []string{"enable_log"},
-		Value:   false,
 	},
 	&cli.StringFlag{
 		Name:    "logPath",
