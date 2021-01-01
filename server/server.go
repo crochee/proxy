@@ -10,15 +10,17 @@ import (
 	"time"
 
 	"github.com/crochee/proxy/logger"
+	"github.com/crochee/proxy/safe"
 )
 
 type Watcher interface {
 }
 
 // NewServer returns an initialized Server.
-func NewServer(ctx context.Context) *Server {
+func NewServer(ctx context.Context, routinesPool *safe.Pool) *Server {
 	return &Server{
 		ctx:            ctx,
+		routinesPool:   routinesPool,
 		watcher:        nil,
 		tcpEntryPoints: nil,
 		stopChan:       make(chan bool, 1),
@@ -27,6 +29,7 @@ func NewServer(ctx context.Context) *Server {
 
 type Server struct {
 	ctx            context.Context
+	routinesPool   *safe.Pool
 	watcher        Watcher
 	tcpEntryPoints map[string]interface{}
 	stopChan       chan bool
@@ -65,6 +68,8 @@ func (s *Server) Close() {
 			panic("Timeout while stopping proxy, killing instance ✝")
 		}
 	}(ctx)
+
+	s.routinesPool.Stop()
 
 	close(s.stopChan)
 	cancel()

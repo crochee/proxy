@@ -15,6 +15,7 @@ import (
 	"github.com/crochee/proxy/cmd"
 	"github.com/crochee/proxy/config"
 	"github.com/crochee/proxy/logger"
+	"github.com/crochee/proxy/safe"
 	"github.com/crochee/proxy/server"
 )
 
@@ -77,9 +78,10 @@ func Run(c *cli.Context) error {
 
 func setup(ctx context.Context, cfg *config.Config) error {
 	ctx = server.ContextWithSignal(ctx)
-
+	// 开启一个协程池,确保自己开启的协程都关闭
+	routinesPool := safe.NewPool(ctx)
 	// 开启server
-	srv := server.NewServer(ctx)
+	srv := server.NewServer(ctx, routinesPool)
 	srv.Start()
 	defer srv.Close()
 
