@@ -5,12 +5,11 @@
 package logger
 
 import (
-	"io"
-	"os"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
+	"os"
 )
 
 var (
@@ -31,13 +30,12 @@ func SetLoggerWriter(path string) io.Writer {
 }
 
 // InitLogger 初始化日志组件
-func InitLogger() {
-	path := os.Getenv("log_path")
-	if path == "" {
-		path = "./log/proxy.log"
+func InitLogger(path, level string) {
+	if path == "" || level == "" {
+		logger = NewZap("DEBUG", zapcore.NewConsoleEncoder, os.Stdout)
+	} else {
+		logger = NewZap(level, zapcore.NewJSONEncoder, SetLoggerWriter(path))
 	}
-	logger = NewZap(os.Getenv("level"),
-		zapcore.NewJSONEncoder, SetLoggerWriter(path))
 	loggerSugar = logger.Sugar()
 }
 
@@ -70,6 +68,18 @@ func Debugf(format string, v ...interface{}) {
 func Debug(message string) {
 	if logger != nil {
 		logger.Debug(message)
+	}
+}
+
+func Warnf(format string, v ...interface{}) {
+	if loggerSugar != nil {
+		loggerSugar.Warnf(format, v...)
+	}
+}
+
+func Warn(message string) {
+	if logger != nil {
+		logger.Warn(message)
 	}
 }
 

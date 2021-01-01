@@ -21,7 +21,7 @@ func (r Redirect) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 
 var reverseProxy = &httputil.ReverseProxy{
 	Director: func(r *http.Request) {
-		r.URL.Host = NewHostMap(config.Cfg.List).Server(r.URL.Host)
+
 	},
 	Transport: http.DefaultTransport,
 }
