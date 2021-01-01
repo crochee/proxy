@@ -5,9 +5,9 @@
 package main
 
 import (
-	"github.com/crochee/proxy/logger"
 	"github.com/urfave/cli/v2"
 
+	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/tls/generate"
 )
 
