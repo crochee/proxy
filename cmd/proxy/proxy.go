@@ -49,30 +49,27 @@ func main() {
 
 var BeforeFlags = []cli.Flag{
 	&cli.BoolFlag{
-		Name:    "enableLog",
-		Aliases: []string{"el"},
+		Name:    "enable-log",
 		Usage:   "enable log switch",
 		EnvVars: []string{"enable_log"},
 	},
 	&cli.StringFlag{
-		Name:    "logPath",
-		Aliases: []string{"lp"},
+		Name:    "log-path",
 		Usage:   "log path",
 		EnvVars: []string{"log_path"},
 	},
 	&cli.StringFlag{
-		Name:    "logLevel",
-		Aliases: []string{"ll"},
+		Name:    "log-level",
 		Usage:   "log level",
 		EnvVars: []string{"log_level"},
 	},
 }
 
 func Before(ctx *cli.Context) error {
-	if !ctx.Bool("enableLog") {
+	if !ctx.Bool("enable-log") {
 		return nil
 	}
-	logger.InitLogger(ctx.String("logPath"), ctx.String("logLevel"))
+	logger.InitLogger(ctx.String("log-path"), ctx.String("log-level"))
 	return nil
 }
 

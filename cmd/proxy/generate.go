@@ -29,5 +29,8 @@ var TlsFlags = []cli.Flag{
 func Certificate(ctx *cli.Context) error {
 	logger.Info("generates random TLS certificates start!")
 	_, err := generate.DefaultCertificate(ctx.String("cert"), ctx.String("key"))
-	return err
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	return nil
 }
