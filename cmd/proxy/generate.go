@@ -29,7 +29,7 @@ var TlsFlags = []cli.Flag{
 	},
 }
 
-func Certificate(c *cli.Context) error {
+func certificate(c *cli.Context) error {
 	ctx := logger.With(context.Background(),
 		logger.Enable(c.Bool("enable-log")),
 		logger.Level(strings.ToUpper(c.String("log-level"))),

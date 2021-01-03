@@ -30,7 +30,7 @@ func main() {
 			Name:        "proxy",
 			Aliases:     []string{"p"},
 			Usage:       "proxy server",
-			Action:      Run,
+			Action:      run,
 			Subcommands: nil,
 			Flags:       BeforeFlags,
 		},
@@ -38,7 +38,7 @@ func main() {
 			Name:    "tls",
 			Aliases: []string{"t"},
 			Usage:   "generates random TLS certificates",
-			Action:  Certificate,
+			Action:  certificate,
 			Flags:   append(BeforeFlags, TlsFlags...),
 		},
 	}
@@ -67,7 +67,7 @@ var BeforeFlags = []cli.Flag{
 	},
 }
 
-func Run(c *cli.Context) error {
+func run(c *cli.Context) error {
 	ctx := logger.With(context.Background(),
 		logger.Enable(c.Bool("enable-log")),
 		logger.Level(strings.ToUpper(c.String("log-level"))),
