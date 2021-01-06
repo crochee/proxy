@@ -63,25 +63,21 @@ func (e Enable) Apply(l *Logger) {
 	}
 }
 
-type contextKey int
-
-const (
-	loggerKey contextKey = iota
-)
+type loggerKey struct{}
 
 // With Adds fields.
 func With(ctx context.Context, opts ...Option) context.Context {
 	InitLogger(opts...)
-	return context.WithValue(ctx, loggerKey, logger)
+	return context.WithValue(ctx, loggerKey{}, logger)
 }
 
 // FromContext Gets the logger from context.
 func FromContext(ctx context.Context) *Logger {
 	if ctx == nil {
-		panic("nil context")
+		return nil
 	}
 
-	logger, ok := ctx.Value(loggerKey).(*Logger)
+	logger, ok := ctx.Value(loggerKey{}).(*Logger)
 	if !ok {
 		return nil
 	}
