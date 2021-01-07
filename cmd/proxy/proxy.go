@@ -17,6 +17,7 @@ import (
 	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/safe"
 	"github.com/crochee/proxy/server"
+	"github.com/crochee/proxy/server/http"
 )
 
 func main() {
@@ -65,6 +66,11 @@ var BeforeFlags = []cli.Flag{
 		Usage:   "log level",
 		EnvVars: []string{"log_level"},
 	},
+	&cli.StringFlag{
+		Name:    "config-path",
+		Usage:   "config path",
+		EnvVars: []string{"_level"},
+	},
 }
 
 func run(c *cli.Context) error {
@@ -80,8 +86,14 @@ func setup(ctx context.Context, cfg *config.Config) error {
 	ctx = server.ContextWithSignal(ctx)
 	// 开启一个协程池,确保自己开启的协程都关闭
 	routinesPool := safe.NewPool(ctx)
+	// http
+	httpServer, err := http.NewEntryPointList(cfg.Spec)
+	if err != nil {
+		logger.FromContext(ctx).Errorf("start failed.Error:%w", err)
+		return err
+	}
 	// 开启server
-	srv := server.NewServer(ctx, routinesPool)
+	srv := server.NewServer(ctx, routinesPool, httpServer)
 	srv.Start()
 	defer srv.Close()
 

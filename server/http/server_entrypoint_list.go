@@ -29,7 +29,7 @@ func NewEntryPointList(entryPointsConfig config.EntryPointList) (EntryPointList,
 			continue
 		}
 		ctx := logger.With(context.Background(), logger.Enable(true),
-			logger.Level(strings.ToUpper("error")),
+			logger.Level(strings.ToUpper("DEBUG")),
 			logger.LogPath(fmt.Sprintf("./log/%s.log", entryPointName)))
 		serverEntryPointList[entryPointName], err = NewEntryPoint(ctx, entryPoint)
 		if err != nil {

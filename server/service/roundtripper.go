@@ -113,7 +113,7 @@ func createRoundTripper(cfg *config.ServersTransport) (http.RoundTripper, error)
 	transport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
 		DialContext:           dialer.DialContext,
-		MaxIdleConnsPerHost:   cfg.MaxIdleConnsPerHost,
+		MaxIdleConnsPerHost:   cfg.MaxIdleConnPerHost,
 		IdleConnTimeout:       90 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,

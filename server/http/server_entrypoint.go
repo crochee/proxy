@@ -24,7 +24,7 @@ import (
 type EntryPoint struct {
 	listener     net.Listener
 	switcher     *middlewares.HTTPHandlerSwitcher
-	Server       *http.Server
+	server       *http.Server
 	ctx          context.Context
 	serverConfig *config.EntryPoint
 }
@@ -61,19 +61,19 @@ func NewEntryPoint(ctx context.Context, configuration *config.EntryPoint) (*Entr
 		listener:     listener,
 		switcher:     httpSwitcher,
 		ctx:          ctx,
-		Server:       srv,
+		server:       srv,
 		serverConfig: configuration,
 	}, nil
 }
 
 func (ep *EntryPoint) Start() {
 	go func() {
-		if err := ep.Server.Serve(ep.listener); err != nil {
+		if err := ep.server.Serve(ep.listener); err != nil {
 			logger.FromContext(ep.ctx).Errorf("Error while starting server: %v", err)
 		}
 	}()
 	go func() {
-		if err := ep.Server.ServeTLS(ep.listener, "", ""); err != nil {
+		if err := ep.server.ServeTLS(ep.listener, "", ""); err != nil {
 			logger.FromContext(ep.ctx).Errorf("Error while starting server: %v", err)
 		}
 	}()
@@ -93,14 +93,14 @@ func (ep *EntryPoint) Shutdown() {
 	ctx, cancel := context.WithTimeout(ep.ctx, graceTimeOut)
 	log.Debugf("Waiting %s seconds before killing connections.", graceTimeOut)
 
-	if ep.Server != nil {
+	if ep.server != nil {
 		func(server *http.Server) {
 			err := server.Shutdown(ctx)
 			if err == nil {
 				return
 			}
 			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-				log.Debugf("Server failed to shutdown within deadline because: %s", err)
+				log.Debugf("server failed to shutdown within deadline because: %s", err)
 				if err = server.Close(); err != nil {
 					log.Error(err.Error())
 				}
@@ -110,7 +110,7 @@ func (ep *EntryPoint) Shutdown() {
 			// We expect Close to fail again because Shutdown most likely failed when trying to close a listener.
 			// We still call it however, to make sure that all connections get closed as well.
 			server.Close()
-		}(ep.Server)
+		}(ep.server)
 	}
 	cancel()
 }

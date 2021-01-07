@@ -12,20 +12,16 @@ import (
 
 var Cfg *Config
 
-func InitConfig() {
-	configYaml, err := LoadYaml()
+func InitConfig(path string) {
+	configYaml, err := LoadYaml(path)
 	if err != nil {
 		panic(err)
 	}
 	Cfg = configYaml
 }
 
-func LoadYaml() (*Config, error) {
-	configPath, ok := os.LookupEnv("config_path")
-	if !ok {
-		configPath = "D:/project/obs/conf/config.yml"
-	}
-	file, err := os.Open(configPath)
+func LoadYaml(path string) (*Config, error) {
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}

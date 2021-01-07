@@ -17,3 +17,14 @@ list:
       target:
         - localhost:8082
         - 127.0.0.1:8083
+spec:
+    sever1:
+        address: 127.0.0.1
+        transport:
+            lifeCycle:
+                requestAcceptGraceTimeout: 1s
+                graceTimeOut: 5s
+            respondingTimeouts:
+                idleTimeout: 3m0s
+        forwardedHeaders:
+            insecure: true

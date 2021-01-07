@@ -5,7 +5,9 @@
 package config
 
 type Config struct {
-	List []*ProxyHost `json:"list" yaml:"list"`
+	List []*ProxyHost   `json:"list" yaml:"list"`
+	Spec EntryPointList `json:"spec" yaml:"spec"`
+	//Transport *ServersTransport `json:"transport" yaml:"transport"`
 }
 
 type ProxyHost struct {

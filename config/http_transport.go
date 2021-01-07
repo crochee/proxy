@@ -11,12 +11,12 @@ import (
 
 // ServersTransport options to configure communication between Traefik and the servers.
 type ServersTransport struct {
-	ServerName          string              `yaml:"serverName,omitempty"`
-	InsecureSkipVerify  bool                `yaml:"insecureSkipVerify,omitempty"`
-	RootCAs             []tls.FileOrContent `yaml:"rootCAs,omitempty"`
-	Certificates        tls.Certificates    `yaml:"certificates,omitempty"`
-	MaxIdleConnsPerHost int                 `yaml:"maxIdleConnsPerHost,omitempty"`
-	ForwardingTimeouts  *ForwardingTimeouts `yaml:"forwardingTimeouts,omitempty"`
+	ServerName         string              `yaml:"serverName,omitempty"`
+	InsecureSkipVerify bool                `yaml:"insecureSkipVerify,omitempty"`
+	RootCAs            []tls.FileOrContent `yaml:"rootCAs,omitempty"`
+	Certificates       tls.Certificates    `yaml:"certificates,omitempty"`
+	MaxIdleConnPerHost int                 `yaml:"maxIdleConnPerHost,omitempty"`
+	ForwardingTimeouts *ForwardingTimeouts `yaml:"forwardingTimeouts,omitempty"`
 }
 
 // ForwardingTimeouts contains timeout configurations for forwarding requests to the backend servers.

@@ -54,10 +54,10 @@ func main() {
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
 	if err := httpSrv.Shutdown(ctx); err != nil {
-		logger.Fatalf("http Server forced to shutdown:%v", err)
+		logger.Fatalf("http server forced to shutdown:%v", err)
 	}
 	if err := httpsSrv.Shutdown(ctx); err != nil {
-		logger.Fatalf("https Server forced to shutdown:%v", err)
+		logger.Fatalf("https server forced to shutdown:%v", err)
 	}
 	logger.Info("proxy server exit!")
 }

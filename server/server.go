@@ -7,6 +7,7 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/crochee/proxy/server/http"
 	"time"
 
 	"github.com/crochee/proxy/logger"
@@ -16,13 +17,13 @@ import (
 type Watcher interface {
 }
 
-// NewServer returns an initialized Server.
-func NewServer(ctx context.Context, routinesPool *safe.Pool) *Server {
+// NewServer returns an initialized server.
+func NewServer(ctx context.Context, routinesPool *safe.Pool, entryPointList http.EntryPointList) *Server {
 	return &Server{
 		ctx:            ctx,
 		routinesPool:   routinesPool,
 		watcher:        nil,
-		tcpEntryPoints: nil,
+		entryPointList: entryPointList,
 		stopChan:       make(chan bool, 1),
 	}
 }
@@ -31,7 +32,7 @@ type Server struct {
 	ctx            context.Context
 	routinesPool   *safe.Pool
 	watcher        Watcher
-	tcpEntryPoints map[string]interface{}
+	entryPointList http.EntryPointList
 	stopChan       chan bool
 }
 
@@ -43,6 +44,7 @@ func (s *Server) Start() {
 		log.Info("Stopping server gracefully")
 		s.Stop()
 	}()
+	s.entryPointList.Start()
 }
 
 // Wait blocks until the server shutdown.
@@ -52,8 +54,9 @@ func (s *Server) Wait() {
 
 // Stop stops the server.
 func (s *Server) Stop() {
+	s.entryPointList.Stop()
 	s.stopChan <- true
-	logger.FromContext(s.ctx).Info("Server stopped")
+	logger.FromContext(s.ctx).Info("server stopped")
 }
 
 // Close destroys the server.
@@ -64,7 +67,8 @@ func (s *Server) Close() {
 		<-ctx.Done()
 		if errors.Is(ctx.Err(), context.Canceled) {
 			return
-		} else if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		}
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 			panic("Timeout while stopping proxy, killing instance ✝")
 		}
 	}(ctx)
