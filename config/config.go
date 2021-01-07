@@ -6,6 +6,7 @@ package config
 
 import (
 	"os"
+	"sync"
 
 	"gopkg.in/yaml.v3"
 )
@@ -31,4 +32,30 @@ func LoadYaml(path string) (*Config, error) {
 		return nil, err
 	}
 	return &config, nil
+}
+
+type Listen interface {
+	Add(Updater)
+	Watch(func(*Config))
+}
+
+type Updater interface {
+}
+
+type Listener struct {
+	rw   sync.RWMutex
+	list map[Updater]struct{}
+}
+
+func (l *Listener) Add(updater Updater) {
+	l.rw.Lock()
+	l.list[updater] = struct{}{}
+	l.rw.Unlock()
+}
+
+func (l *Listener) Watch(f func(*Config)) {
+	for update := range l.list {
+		update
+	}
+
 }
