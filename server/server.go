@@ -9,13 +9,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/crochee/proxy/config"
 	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/safe"
 	"github.com/crochee/proxy/server/http"
 )
-
-type Watcher interface {
-}
 
 // NewServer returns an initialized server.
 func NewServer(ctx context.Context, routinesPool *safe.Pool, entryPointList http.EntryPointList) *Server {
@@ -31,7 +29,7 @@ func NewServer(ctx context.Context, routinesPool *safe.Pool, entryPointList http
 type Server struct {
 	ctx            context.Context
 	routinesPool   *safe.Pool
-	watcher        Watcher
+	watcher        config.Watcher
 	entryPointList http.EntryPointList
 	stopChan       chan bool
 }

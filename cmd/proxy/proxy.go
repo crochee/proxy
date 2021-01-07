@@ -90,7 +90,7 @@ func setup(ctx context.Context, cfg *config.Config) error {
 
 	roundTripperManager := service.NewRoundTripperManager()
 
-	roundTripperManager.Update(map[string]*config.ServersTransport{})
+	roundTripperManager.Update(map[config.ServerName]*config.ServersTransport{})
 	// 开启一个协程池,确保自己开启的协程都关闭
 	routinesPool := safe.NewPool(ctx)
 	// http

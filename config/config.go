@@ -35,7 +35,7 @@ func LoadYaml(path string) (*Config, error) {
 	return &config, nil
 }
 
-type Listen interface {
+type Watcher interface {
 	Add(Updater)
 	Update(Updater)
 	Watch(func(*Config))
