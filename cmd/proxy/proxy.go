@@ -70,6 +70,7 @@ var BeforeFlags = []cli.Flag{
 		Name:    "config-path",
 		Usage:   "config path",
 		EnvVars: []string{"_level"},
+		Value:   "./conf/config.yml",
 	},
 }
 
@@ -79,7 +80,8 @@ func run(c *cli.Context) error {
 		logger.Level(strings.ToUpper(c.String("log-level"))),
 		logger.LogPath(c.String("log-path")),
 	)
-	return setup(ctx, nil)
+	config.InitConfig(c.String("config-path"))
+	return setup(ctx, config.Cfg)
 }
 
 func setup(ctx context.Context, cfg *config.Config) error {

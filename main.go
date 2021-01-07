@@ -19,7 +19,7 @@ import (
 
 func main() {
 	logger.InitLogger()
-	config.InitConfig()
+	config.InitConfig("./conf/config.yml")
 
 	httpSrv := &http.Server{
 		Addr:    ":80",
