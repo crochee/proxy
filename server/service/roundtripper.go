@@ -23,20 +23,20 @@ import (
 // NewRoundTripperManager creates a new RoundTripperManager.
 func NewRoundTripperManager() *RoundTripperManager {
 	return &RoundTripperManager{
-		roundTrippers: make(map[string]http.RoundTripper),
-		configs:       make(map[string]*config.ServersTransport),
+		roundTrippers: make(map[config.ServerName]http.RoundTripper),
+		configs:       make(map[config.ServerName]*config.ServersTransport),
 	}
 }
 
-// RoundTripperManager handles roundtripper for the reverse proxy.
+// RoundTripperManager handles RoundTripper for the reverse proxy.
 type RoundTripperManager struct {
 	rtLock        sync.RWMutex
-	roundTrippers map[string]http.RoundTripper
-	configs       map[string]*config.ServersTransport
+	roundTrippers map[config.ServerName]http.RoundTripper
+	configs       map[config.ServerName]*config.ServersTransport
 }
 
-// Update updates the roundtrippers configurations.
-func (r *RoundTripperManager) Update(newConfigs map[string]*config.ServersTransport) {
+// Update updates the RoundTripper configurations.
+func (r *RoundTripperManager) Update(newConfigs map[config.ServerName]*config.ServersTransport) {
 	r.rtLock.Lock()
 	defer r.rtLock.Unlock()
 
@@ -76,8 +76,8 @@ func (r *RoundTripperManager) Update(newConfigs map[string]*config.ServersTransp
 	r.configs = newConfigs
 }
 
-// Get get a roundtripper by name.
-func (r *RoundTripperManager) Get(name string) (http.RoundTripper, error) {
+// Get get a RoundTripper by name.
+func (r *RoundTripperManager) Get(name config.ServerName) (http.RoundTripper, error) {
 	if len(name) == 0 {
 		name = "default@internal"
 	}
@@ -126,7 +126,7 @@ func createRoundTripper(cfg *config.ServersTransport) (http.RoundTripper, error)
 
 	if cfg.InsecureSkipVerify || len(cfg.RootCAs) > 0 || len(cfg.ServerName) > 0 || len(cfg.Certificates) > 0 {
 		transport.TLSClientConfig = &tls.Config{
-			ServerName:         cfg.ServerName,
+			ServerName:         string(cfg.ServerName),
 			InsecureSkipVerify: cfg.InsecureSkipVerify,
 			RootCAs:            createRootCACertPool(cfg.RootCAs),
 			Certificates:       cfg.Certificates.GetCertificates(),

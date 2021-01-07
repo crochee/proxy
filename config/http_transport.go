@@ -5,13 +5,16 @@
 package config
 
 import (
-	"github.com/crochee/proxy/tls"
 	"time"
+
+	"github.com/crochee/proxy/tls"
 )
+
+type ServerName string
 
 // ServersTransport options to configure communication between Traefik and the servers.
 type ServersTransport struct {
-	ServerName         string              `yaml:"serverName,omitempty"`
+	ServerName         ServerName          `yaml:"serverName,omitempty"`
 	InsecureSkipVerify bool                `yaml:"insecureSkipVerify,omitempty"`
 	RootCAs            []tls.FileOrContent `yaml:"rootCAs,omitempty"`
 	Certificates       tls.Certificates    `yaml:"certificates,omitempty"`

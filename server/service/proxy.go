@@ -23,7 +23,7 @@ const StatusClientClosedRequest = 499
 // StatusClientClosedRequestText non-standard HTTP status for client disconnection.
 const StatusClientClosedRequestText = "Client Closed Request"
 
-func buildProxy(flushInterval time.Duration, roundTripper http.RoundTripper) (http.Handler, error) {
+func BuildProxy(flushInterval time.Duration, roundTripper http.RoundTripper) (http.Handler, error) {
 	proxy := &httputil.ReverseProxy{
 		Director:      Director,
 		Transport:     roundTripper,
@@ -84,18 +84,4 @@ func Director(request *http.Request) {
 	if _, ok := request.Header["User-Agent"]; !ok {
 		request.Header.Set("User-Agent", "")
 	}
-}
-
-var DefaultTransport = &http.Transport{
-	Proxy: http.ProxyFromEnvironment,
-	DialContext: (&net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
-		DualStack: true,
-	}).DialContext,
-	ForceAttemptHTTP2:     true,
-	MaxIdleConns:          100,
-	IdleConnTimeout:       90 * time.Second,
-	TLSHandshakeTimeout:   10 * time.Second,
-	ExpectContinueTimeout: 1 * time.Second,
 }

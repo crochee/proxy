@@ -5,6 +5,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"sync"
 
@@ -36,6 +37,7 @@ func LoadYaml(path string) (*Config, error) {
 
 type Listen interface {
 	Add(Updater)
+	Update(Updater)
 	Watch(func(*Config))
 }
 
@@ -53,9 +55,15 @@ func (l *Listener) Add(updater Updater) {
 	l.rw.Unlock()
 }
 
+func (l *Listener) Update(updater Updater) {
+	l.rw.Lock()
+	l.list[updater] = struct{}{}
+	l.rw.Unlock()
+}
+
 func (l *Listener) Watch(f func(*Config)) {
 	for update := range l.list {
-		update
+		log.Printf("%v", update)
 	}
 
 }

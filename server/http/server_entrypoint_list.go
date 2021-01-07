@@ -15,7 +15,7 @@ import (
 	"github.com/crochee/proxy/logger"
 )
 
-type EntryPointList map[string]*EntryPoint
+type EntryPointList map[config.ServerName]*EntryPoint
 
 // NewTCPEntryPoints creates a new TCPEntryPoints.
 func NewEntryPointList(entryPointsConfig config.EntryPointList) (EntryPointList, error) {
@@ -54,7 +54,7 @@ func (epl EntryPointList) Stop() {
 	for epn, ep := range epl {
 		wg.Add(1)
 
-		go func(entryPointName string, entryPoint *EntryPoint) {
+		go func(entryPointName config.ServerName, entryPoint *EntryPoint) {
 			defer wg.Done()
 			entryPoint.Shutdown()
 			logger.FromContext(entryPoint.ctx).Debugf("Entry point %s closed", entryPointName)
@@ -70,7 +70,7 @@ func (epl EntryPointList) Update(entryPointsConfig config.EntryPointList) {
 }
 
 // Switch the routers.
-func (epl EntryPointList) Switch(routers map[string]http.Handler) {
+func (epl EntryPointList) Switch(routers map[config.ServerName]http.Handler) {
 	for entryPointName, rt := range routers {
 		epl[entryPointName].SwitchRouter(rt)
 	}

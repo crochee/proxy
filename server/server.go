@@ -7,11 +7,11 @@ package server
 import (
 	"context"
 	"errors"
-	"github.com/crochee/proxy/server/http"
 	"time"
 
 	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/safe"
+	"github.com/crochee/proxy/server/http"
 )
 
 type Watcher interface {

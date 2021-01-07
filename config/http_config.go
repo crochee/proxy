@@ -19,7 +19,7 @@ const (
 	DefaultIdleTimeout = 180 * time.Second
 )
 
-type EntryPointList map[string]*EntryPoint
+type EntryPointList map[ServerName]*EntryPoint
 
 // EntryPoint holds the entry point configuration.
 type EntryPoint struct {
