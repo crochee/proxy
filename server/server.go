@@ -69,7 +69,7 @@ func (s *Server) Close() {
 			return
 		}
 		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-			panic("Timeout while stopping proxy, killing instance ✝")
+			panic("timeout while stopping proxy, killing instance ✝")
 		}
 	}(ctx)
 

@@ -91,7 +91,7 @@ func setup(ctx context.Context, cfg *config.Config) error {
 	// http
 	httpServer, err := http.NewEntryPointList(cfg.Spec)
 	if err != nil {
-		logger.FromContext(ctx).Errorf("start failed.Error:%w", err)
+		logger.FromContext(ctx).Errorf("start failed.Error:%v", err)
 		return err
 	}
 	// 开启server

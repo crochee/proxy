@@ -5,12 +5,12 @@
 package config
 
 type Config struct {
-	List []*ProxyHost   `json:"list" yaml:"list"`
-	Spec EntryPointList `json:"spec" yaml:"spec"`
+	List []*ProxyHost   `yaml:"list,omitempty"`
+	Spec EntryPointList `yaml:"spec,omitempty"`
 	//Transport *ServersTransport `json:"transport" yaml:"transport"`
 }
 
 type ProxyHost struct {
-	Origin []string `json:"origin" yaml:"origin"`
-	Target []string `json:"target" yaml:"target"`
+	Origin []string `yaml:"origin,omitempty"`
+	Target []string `yaml:"target,omitempty"`
 }

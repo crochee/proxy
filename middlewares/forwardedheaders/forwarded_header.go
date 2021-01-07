@@ -5,11 +5,12 @@
 package forwardedheaders
 
 import (
-	"github.com/crochee/proxy/util/ip"
 	"net"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/crochee/proxy/util/ip"
 )
 
 const (

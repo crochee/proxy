@@ -31,7 +31,7 @@ type EntryPoint struct {
 
 // NewEntryPoint creates a new EntryPoint.
 func NewEntryPoint(ctx context.Context, configuration *config.EntryPoint) (*EntryPoint, error) {
-	listener, err := net.Listen("tcp", configuration.GetAddress())
+	listener, err := net.Listen("tcp", configuration.GetPort())
 	if err != nil {
 		return nil, fmt.Errorf("error opening listener: %w", err)
 	}

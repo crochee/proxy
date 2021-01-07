@@ -1,25 +1,7 @@
-list:
-    - origin:
-        - localhost:80
-        - 127.0.0.1:80
-      target:
-        - localhost:8080
-        - 127.0.0.1:8080
-    - origin:
-        - localhost:81
-        - 127.0.0.1:81
-      target:
-        - localhost:8081
-        - 127.0.0.1:8081
-    - origin:
-        - localhost:8082
-        - 127.0.0.1:8083
-      target:
-        - localhost:8082
-        - 127.0.0.1:8083
 spec:
-    sever1:
-        address: 127.0.0.1
+    proxy:
+        port: 8085
+        protocol: TCP
         transport:
             lifeCycle:
                 requestAcceptGraceTimeout: 1s
