@@ -61,8 +61,8 @@ func ErrorHandler(w http.ResponseWriter, request *http.Request, err error) {
 		}
 	}
 
-	logger.Debugf("url:%s '%d %s' caused by: %v",
-		request.RequestURI,
+	logger.Debugf("url:%+v '%d %s' caused by: %v",
+		request.URL,
 		statusCode, statusText(statusCode), err)
 	w.WriteHeader(statusCode)
 	if _, err = w.Write([]byte(statusText(statusCode))); err != nil {
@@ -78,10 +78,8 @@ func Director(request *http.Request) {
 			u = parsedURL
 		}
 	}
-	request.URL.Path = u.Path
-	request.URL.RawPath = u.RawPath
-	request.URL.RawQuery = u.RawQuery
-	request.RequestURI = "" // Outgoing request should not have RequestURI
+	request.URL = u
+	request.RequestURI = u.RequestURI()
 
 	if _, ok := request.Header["User-Agent"]; !ok {
 		request.Header.Set("User-Agent", "")

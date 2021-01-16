@@ -29,12 +29,6 @@ type EntryPoint struct {
 	ForwardedHeaders *ForwardedHeaders     `yaml:"forwardedHeaders,omitempty"`
 }
 
-// GetAddress strips any potential protocol part of the address field of the
-// entry point, in order to return the actual address.
-func (ep EntryPoint) GetPort() string {
-	return fmt.Sprintf(":%d", ep.Port)
-}
-
 // GetProtocol returns the protocol part of the address field of the entry point.
 // If none is specified, it defaults to "tcp".
 func (ep EntryPoint) GetProtocol() (string, error) {

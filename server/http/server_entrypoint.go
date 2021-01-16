@@ -9,7 +9,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/crochee/proxy/middlewares/replacehost"
 	"net"
 	"net/http"
 	"time"
@@ -18,22 +17,29 @@ import (
 	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/middlewares"
 	"github.com/crochee/proxy/middlewares/forwardedheaders"
+	"github.com/crochee/proxy/middlewares/replacehost"
 	"github.com/crochee/proxy/server/service"
 	tls2 "github.com/crochee/proxy/tls"
 )
 
 // EntryPoint is the http server.
 type EntryPoint struct {
-	listener     net.Listener
-	switcher     *middlewares.HTTPHandlerSwitcher
-	server       *http.Server
-	ctx          context.Context
-	serverConfig *config.EntryPoint
+	httpListener  net.Listener
+	httpsListener net.Listener
+	switcher      *middlewares.HTTPHandlerSwitcher
+	server        *http.Server
+	ctx           context.Context
+	serverConfig  *config.EntryPoint
 }
 
 // NewEntryPoint creates a new EntryPoint.
 func NewEntryPoint(ctx context.Context, configuration *config.EntryPoint) (*EntryPoint, error) {
-	listener, err := net.Listen("tcp", configuration.GetPort())
+	httpListener, err := net.Listen("tcp", fmt.Sprintf(":%d", configuration.Port))
+	if err != nil {
+		return nil, fmt.Errorf("error opening listener: %w", err)
+	}
+	var httpsListener net.Listener
+	httpsListener, err = net.Listen("tcp", fmt.Sprintf(":%d", configuration.Port+1))
 	if err != nil {
 		return nil, fmt.Errorf("error opening listener: %w", err)
 	}
@@ -73,22 +79,23 @@ func NewEntryPoint(ctx context.Context, configuration *config.EntryPoint) (*Entr
 	}
 
 	return &EntryPoint{
-		listener:     listener,
-		switcher:     httpSwitcher,
-		ctx:          ctx,
-		server:       srv,
-		serverConfig: configuration,
+		httpListener:  httpListener,
+		httpsListener: httpsListener,
+		switcher:      httpSwitcher,
+		ctx:           ctx,
+		server:        srv,
+		serverConfig:  configuration,
 	}, nil
 }
 
 func (ep *EntryPoint) Start() {
 	go func() {
-		if err := ep.server.Serve(ep.listener); err != nil {
+		if err := ep.server.Serve(ep.httpListener); err != nil {
 			logger.FromContext(ep.ctx).Errorf("Error while starting server: %v", err)
 		}
 	}()
 	go func() {
-		if err := ep.server.ServeTLS(ep.listener, "", ""); err != nil {
+		if err := ep.server.ServeTLS(ep.httpsListener, "", ""); err != nil {
 			logger.FromContext(ep.ctx).Errorf("Error while starting server: %v", err)
 		}
 	}()

@@ -25,7 +25,8 @@ type AddPrefix struct {
 }
 
 type ReplaceHost struct {
-	Host string `yaml:"host,omitempty"`
+	Scheme string `yaml:"scheme,omitempty"`
+	Host   string `yaml:"host,omitempty"`
 }
 
 // ReplacePath holds the ReplacePath configuration.

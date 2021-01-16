@@ -15,4 +15,5 @@ transport:
     maxIdleConnPerHost: 100
 middleware:
     replaceHost:
-        host: 127.0.0.1:8088
+        scheme: http
+        host: 127.0.0.1:8150

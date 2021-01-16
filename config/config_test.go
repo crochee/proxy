@@ -47,7 +47,10 @@ func TestLoadYaml(t *testing.T) {
 			ForwardingTimeouts: nil,
 		},
 		Middleware: &dynamic.Middleware{
-			ReplaceHost: &dynamic.ReplaceHost{Host: "127.0.0.1:8088"},
+			ReplaceHost: &dynamic.ReplaceHost{
+				Scheme: "http",
+				Host:   "127.0.0.1:8150",
+			},
 		},
 	}
 	configPath, ok := os.LookupEnv("config_path")
