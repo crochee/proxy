@@ -40,7 +40,7 @@ func TestLoadYaml(t *testing.T) {
 		},
 		Transport: &ServersTransport{
 			ServerName:         "default",
-			InsecureSkipVerify: false,
+			InsecureSkipVerify: true,
 			RootCAs:            nil,
 			Certificates:       nil,
 			MaxIdleConnPerHost: 100,

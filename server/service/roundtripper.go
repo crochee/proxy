@@ -34,10 +34,10 @@ func CreateRoundTripper(cfg *config.ServersTransport) (http.RoundTripper, error)
 	if cfg.ForwardingTimeouts != nil {
 		dialer.Timeout = cfg.ForwardingTimeouts.DialTimeout
 	}
-
 	transport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
 		DialContext:           dialer.DialContext,
+		ForceAttemptHTTP2:     true,
 		MaxIdleConnsPerHost:   cfg.MaxIdleConnPerHost,
 		IdleConnTimeout:       90 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
