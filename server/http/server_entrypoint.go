@@ -9,6 +9,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"github.com/crochee/proxy/middlewares/replacehost"
 	"net"
 	"net/http"
 	"time"
@@ -17,6 +18,7 @@ import (
 	"github.com/crochee/proxy/logger"
 	"github.com/crochee/proxy/middlewares"
 	"github.com/crochee/proxy/middlewares/forwardedheaders"
+	"github.com/crochee/proxy/server/service"
 	tls2 "github.com/crochee/proxy/tls"
 )
 
@@ -35,7 +37,20 @@ func NewEntryPoint(ctx context.Context, configuration *config.EntryPoint) (*Entr
 	if err != nil {
 		return nil, fmt.Errorf("error opening listener: %w", err)
 	}
-	httpSwitcher := middlewares.NewHandlerSwitcher(http.NotFoundHandler())
+	var rt http.RoundTripper
+	if rt, err = service.CreateRoundTripper(config.Cfg.Transport); err != nil {
+		return nil, err
+	}
+	var proxyRoute http.Handler
+	if proxyRoute, err = service.BuildProxy(30*time.Second, rt); err != nil {
+		return nil, err
+	}
+	//httpSwitcher := middlewares.NewHandlerSwitcher(http.NotFoundHandler())
+	var route http.Handler
+	if route, err = replacehost.New(ctx, proxyRoute, *config.Cfg.Middleware.ReplaceHost); err != nil {
+		return nil, err
+	}
+	httpSwitcher := middlewares.NewHandlerSwitcher(route)
 	var handler http.Handler
 	if handler, err = forwardedheaders.NewXForwarded(
 		configuration.ForwardedHeaders.Insecure,

@@ -10,3 +10,9 @@ spec:
                 idleTimeout: 3m0s
         forwardedHeaders:
             insecure: true
+transport:
+    serverName: default
+    maxIdleConnPerHost: 100
+middleware:
+    replaceHost:
+        host: 127.0.0.1:8088

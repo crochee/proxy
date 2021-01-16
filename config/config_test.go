@@ -10,10 +10,13 @@ import (
 	"time"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/crochee/proxy/config/dynamic"
 )
 
 func TestLoadYaml(t *testing.T) {
 	cf := &Config{
+		List: nil,
 		Spec: EntryPointList{
 			"proxy": &EntryPoint{
 				Port:     8085,
@@ -34,6 +37,17 @@ func TestLoadYaml(t *testing.T) {
 					TrustedIPs: []string{},
 				},
 			},
+		},
+		Transport: &ServersTransport{
+			ServerName:         "default",
+			InsecureSkipVerify: false,
+			RootCAs:            nil,
+			Certificates:       nil,
+			MaxIdleConnPerHost: 100,
+			ForwardingTimeouts: nil,
+		},
+		Middleware: &dynamic.Middleware{
+			ReplaceHost: &dynamic.ReplaceHost{Host: "127.0.0.1:8088"},
 		},
 	}
 	configPath, ok := os.LookupEnv("config_path")

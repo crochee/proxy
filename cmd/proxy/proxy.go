@@ -18,7 +18,6 @@ import (
 	"github.com/crochee/proxy/safe"
 	"github.com/crochee/proxy/server"
 	"github.com/crochee/proxy/server/http"
-	"github.com/crochee/proxy/server/service"
 )
 
 func main() {
@@ -88,9 +87,6 @@ func run(c *cli.Context) error {
 func setup(ctx context.Context, cfg *config.Config) error {
 	ctx = server.ContextWithSignal(ctx)
 
-	roundTripperManager := service.NewRoundTripperManager()
-
-	roundTripperManager.Update(map[config.ServerName]*config.ServersTransport{})
 	// 开启一个协程池,确保自己开启的协程都关闭
 	routinesPool := safe.NewPool(ctx)
 	// http

@@ -11,6 +11,7 @@ import "time"
 // Middleware holds the Middleware configuration.
 type Middleware struct {
 	AddPrefix        *AddPrefix        `yaml:"addPrefix,omitempty"`
+	ReplaceHost      *ReplaceHost      `yaml:"replaceHost,omitempty"`
 	ReplacePath      *ReplacePath      `yaml:"replacePath,omitempty"`
 	ReplacePathRegex *ReplacePathRegex `yaml:"replacePathRegex,omitempty"`
 	RateLimit        *RateLimit        `yaml:"rateLimit,omitempty"`
@@ -21,6 +22,10 @@ type Middleware struct {
 // AddPrefix holds the AddPrefix configuration.
 type AddPrefix struct {
 	Prefix string `yaml:"prefix,omitempty"`
+}
+
+type ReplaceHost struct {
+	Host string `yaml:"host,omitempty"`
 }
 
 // ReplacePath holds the ReplacePath configuration.

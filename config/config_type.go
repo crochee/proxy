@@ -4,10 +4,13 @@
 
 package config
 
+import "github.com/crochee/proxy/config/dynamic"
+
 type Config struct {
-	List []*ProxyHost   `yaml:"list,omitempty"`
-	Spec EntryPointList `yaml:"spec,omitempty"`
-	//Transport *ServersTransport `json:"transport" yaml:"transport"`
+	List       []*ProxyHost        `yaml:"list,omitempty"`
+	Spec       EntryPointList      `yaml:"spec,omitempty"`
+	Transport  *ServersTransport   `yaml:"transport,omitempty"`
+	Middleware *dynamic.Middleware `yaml:"middleware,omitempty"`
 }
 
 type ProxyHost struct {

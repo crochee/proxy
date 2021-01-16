@@ -61,7 +61,9 @@ func ErrorHandler(w http.ResponseWriter, request *http.Request, err error) {
 		}
 	}
 
-	logger.Debugf("'%d %s' caused by: %v", statusCode, statusText(statusCode), err)
+	logger.Debugf("url:%s '%d %s' caused by: %v",
+		request.RequestURI,
+		statusCode, statusText(statusCode), err)
 	w.WriteHeader(statusCode)
 	if _, err = w.Write([]byte(statusText(statusCode))); err != nil {
 		logger.Errorf("Error while writing status code", err)
